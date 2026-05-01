@@ -1,0 +1,5 @@
+[versions]
+lombok = "1.18.46"
+
+[libraries]
+lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }

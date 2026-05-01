@@ -1,0 +1,33 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+dependencies {
+    implementation gradleApi()
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}
+
+gradlePlugin {
+    plugins {
+        publishPlugin {
+            id = 'dev.sorokin.gradle.plugins.publish'
+            implementationClass = 'dev.sorokin.publish.gradle.plugin.ext.GradlePluginPublishPlugin'
+        }
+    }
+}
+
+publishing {
+    publications {
+        create("plugin", MavenPublication) {
+            from project.components.java
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}

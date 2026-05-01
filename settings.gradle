@@ -1,20 +1,3 @@
-import org.gradle.api.initialization.resolve.RepositoriesMode
-
-pluginManagement {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    setRepositoriesMode(RepositoriesMode.PREFER_SETTINGS)
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
+apply from: 'repositories.gradle'
 
 rootProject.name = 'publish-gradle-plugin'

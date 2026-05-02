@@ -30,8 +30,8 @@ public abstract class DefaultGradlePublishPlugin implements GradlePublishPlugin 
 
     private void initPluginExtension(Project project) {
         var extensions = project.getExtensions();
-        var emisarPublish = extensions.create("sorokinPublish", GradlePublishPluginExtension.class);
-        setupPluginExtension(project, emisarPublish);
+        var setupPluginExtension = extensions.create("sorokinPublish", GradlePublishPluginExtension.class);
+        setupPluginExtension(project, setupPluginExtension);
     }
 
     private void setupPublishingExtension(Project project) {

@@ -1,33 +1,20 @@
+//file:noinspection GroovyAssignabilityCheck
 plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
 }
 
-dependencies {
-    implementation gradleApi()
-    compileOnly libs.lombok
-    annotationProcessor libs.lombok
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 gradlePlugin {
     plugins {
         publishPlugin {
-            id = 'dev.sorokin.gradle.plugins.publish'
-            implementationClass = 'dev.sorokin.publish.gradle.plugin.ext.GradlePluginPublishPlugin'
+            id = 'publish-plugin'
+            implementationClass = 'dev.sorokin.publish.gradle.plugin.GradlePublishPlugin'
         }
-    }
-}
-
-publishing {
-    publications {
-        create("plugin", MavenPublication) {
-            from project.components.java
-            groupId = project.group
-            artifactId = project.name
-            version = project.version
-        }
-    }
-    repositories {
-        mavenLocal()
     }
 }

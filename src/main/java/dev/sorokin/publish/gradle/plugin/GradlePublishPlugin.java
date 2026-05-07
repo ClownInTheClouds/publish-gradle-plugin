@@ -44,7 +44,6 @@ public class GradlePublishPlugin implements Plugin<Project> {
     }
 
     private void configurePublication(Project project, MavenPublication publication, GradlePublishPluginExtension extension) {
-        extension.getPublicationType().finalizeValueOnRead();
         publication.from(project.getComponents().named(extension.getPublicationType().get().getComponentName()).get());
         publication.setGroupId(extension.getPublicationGroup().get());
         publication.setArtifactId(extension.getPublicationArtifactId().get());

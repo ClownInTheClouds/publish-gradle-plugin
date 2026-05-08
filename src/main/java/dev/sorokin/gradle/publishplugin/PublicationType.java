@@ -1,4 +1,4 @@
-package dev.sorokin.publish.gradle.plugin;
+package dev.sorokin.gradle.publishplugin;
 
 public enum PublicationType {
 

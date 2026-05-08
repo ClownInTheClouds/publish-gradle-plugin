@@ -14,7 +14,7 @@ gradlePlugin {
     plugins {
         publishPlugin {
             id = 'publish-plugin'
-            implementationClass = 'dev.sorokin.publish.gradle.plugin.GradlePublishPlugin'
+            implementationClass = 'dev.sorokin.gradle.publishplugin.GradlePublishPlugin'
         }
     }
 }

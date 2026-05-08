@@ -1,4 +1,4 @@
-package dev.sorokin.publish.gradle.plugin;
+package dev.sorokin.gradle.publishplugin;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;

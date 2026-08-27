@@ -21,7 +21,7 @@ software component (`java`, `javaPlatform`), and additional artifacts
 ## Requirements
 
 - Gradle 8.x+
-- Java 25 (toolchain)
+- Java 17 (toolchain)
 
 ## Usage
 

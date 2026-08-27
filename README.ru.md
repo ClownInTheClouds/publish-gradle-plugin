@@ -18,7 +18,7 @@ Gradle-плагин, который упрощает настройку Maven-п
 ## Требования
 
 - Gradle 8.x+
-- Java 25 (toolchain)
+- Java 17 (toolchain)
 
 ## Применение
 

@@ -19,30 +19,20 @@ public enum PublicationType {
     /**
      * A regular Java library (the {@code java} component).
      */
-    LIBRARY("library", "java"),
+    LIBRARY("java"),
     /**
      * A Gradle plugin (the {@code java} component).
      */
-    PLUGIN("plugin", "java"),
+    PLUGIN("java"),
     /**
      * A platform/BOM (the {@code javaPlatform} component, requires the {@code java-platform} plugin).
      */
-    BOM("bom", "javaPlatform");
+    BOM("javaPlatform");
 
-    private final String publicationName;
     private final String componentName;
 
-    PublicationType(String publicationName, String componentName) {
-        this.publicationName = publicationName;
+    PublicationType(String componentName) {
         this.componentName = componentName;
-    }
-
-    /**
-     * The conventional publication name (currently unused, reserved).
-     */
-    @SuppressWarnings("unused")
-    public String getPublicationName() {
-        return publicationName;
     }
 
     /**

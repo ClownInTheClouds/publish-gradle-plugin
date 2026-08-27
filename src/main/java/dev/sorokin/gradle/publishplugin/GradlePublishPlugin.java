@@ -11,6 +11,40 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * A Gradle plugin that simplifies configuring a project's Maven publication.
+ *
+ * <p>Applies {@link MavenPublishPlugin}, registers the {@code publishPlugin}
+ * extension (see {@link GradlePublishPluginExtension}), and uses it to configure
+ * a single {@code mavenJava} publication: the software component (based on
+ * {@link PublicationType}), the group/artifactId/version coordinates, and,
+ * if present, the {@code sourcesJar}/{@code javadocJar} tasks as artifacts.
+ *
+ * <p>This plugin does not configure publication repositories — use the
+ * standard {@code publishing.repositories { ... }} block, which becomes
+ * available automatically once this plugin is applied.
+ *
+ * <p>Example usage:
+ * <pre>{@code
+ * plugins {
+ *     id 'java'
+ *     id 'publish-plugin'
+ * }
+ *
+ * publishPlugin {
+ *     publicationType = PublicationType.LIBRARY
+ * }
+ *
+ * publishing {
+ *     repositories {
+ *         maven { url = uri("https://my.repo/releases") }
+ *     }
+ * }
+ * }</pre>
+ *
+ * @see GradlePublishPluginExtension
+ * @see PublicationType
+ */
 public class GradlePublishPlugin implements Plugin<Project> {
 
     private static final String EXTENSION_NAME = "publishPlugin";
@@ -32,6 +66,12 @@ public class GradlePublishPlugin implements Plugin<Project> {
             JAVADOC_JAR_TASK_NAME, "javadoc"
     );
 
+    /**
+     * Applies {@link MavenPublishPlugin}, creates the {@code publishPlugin}
+     * extension, and configures the {@code mavenJava} publication based on it.
+     *
+     * @param project the project this plugin is applied to
+     */
     @Override
     public void apply(@NotNull Project project) {
         project.getPluginManager().apply(MavenPublishPlugin.class);
@@ -39,6 +79,11 @@ public class GradlePublishPlugin implements Plugin<Project> {
         project.afterEvaluate(p -> configurePublishing(p, extension));
     }
 
+    /**
+     * Registers the {@link GradlePublishPluginExtension} with defaults:
+     * group and version are taken from the {@link Project}, artifactId from
+     * the project name.
+     */
     private GradlePublishPluginExtension createExtension(Project project) {
         var extension = project.getExtensions().create(EXTENSION_NAME, GradlePublishPluginExtension.class, project.getObjects());
         extension.getPublicationGroup().convention(project.provider(() -> project.getGroup().toString()));
@@ -47,6 +92,17 @@ public class GradlePublishPlugin implements Plugin<Project> {
         return extension;
     }
 
+    /**
+     * Registers the {@code mavenJava} Maven publication.
+     *
+     * <p>Must be called from {@code project.afterEvaluate}, not eagerly during
+     * {@link #apply}: the {@code maven-publish} plugin realizes registered
+     * publications immediately (via an internal {@code withType(...).all { }}
+     * listener) rather than lazily, so by the time {@link #configurePublication}
+     * runs, the build script must have already finished executing — otherwise
+     * project properties like {@code group} and {@code version}, if assigned
+     * later in the script, would not yet be available.
+     */
     private void configurePublishing(Project project, GradlePublishPluginExtension extension) {
         project.getExtensions().configure(PublishingExtension.class, publishing ->
                 publishing.publications(publications -> publications.register(
@@ -57,6 +113,16 @@ public class GradlePublishPlugin implements Plugin<Project> {
         );
     }
 
+    /**
+     * Populates the publication: component (based on {@link PublicationType}),
+     * coordinates (group/artifactId/version), and, if present, the
+     * sources/javadoc jar artifacts.
+     *
+     * @throws InvalidUserCodeException if the software component required by
+     *         the selected {@link PublicationType} is missing from the project
+     *         (for example, {@link PublicationType#BOM} is selected but the
+     *         {@code java-platform} plugin is not applied)
+     */
     private void configurePublication(Project project, MavenPublication publication, GradlePublishPluginExtension extension) {
         var type = extension.getPublicationType().get();
         var componentName = type.getComponentName();
@@ -93,6 +159,7 @@ public class GradlePublishPlugin implements Plugin<Project> {
             return;
         }
         var classifier = ARTIFACT_TASK_CLASSIFIERS.get(taskName);
+        Objects.requireNonNull(classifier, "no classifier mapping for task " + taskName);
         var alreadyPublished = publication.getArtifacts().stream()
                 .anyMatch(artifact -> Objects.equals(classifier, artifact.getClassifier())
                         && JAR_EXTENSION.equals(artifact.getExtension()));

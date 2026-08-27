@@ -1,26 +1,29 @@
 # publish-plugin
 
-Gradle-плагин, который упрощает настройку Maven-публикации для Java-проектов.
+[![EN](https://img.shields.io/badge/lang-en-red.svg)](README.md)
+[![RU](https://img.shields.io/badge/lang-ru-blue.svg)](README.ru.md)
 
-Плагин автоматически конфигурирует `mavenJava` публикацию: group/artifact/version,
-программный компонент (`java`, `javaPlatform`) и дополнительные артефакты
-(`sourcesJar`, `javadocJar`), избегая дублирования при использовании
+A Gradle plugin that simplifies Maven publication configuration for Java projects.
+
+The plugin automatically configures the `mavenJava` publication: group/artifact/version,
+software component (`java`, `javaPlatform`), and additional artifacts
+(`sourcesJar`, `javadocJar`), avoiding duplication when using
 `java.withSourcesJar()` / `withJavadocJar()`.
 
-## Возможности
+## Features
 
-- **Однострочная настройка** — применил плагин, и публикация уже сконфигурирована.
-- **Разумные умолчания** — `groupId` и `version` берутся из проекта, `artifactId` — из имени проекта.
-- **Поддержка компонентов** — публикуй библиотеки (`java`), Gradle-плагины (`java`) или BOM-файлы (`javaPlatform`).
-- **Умные артефакты** — `sourcesJar` и `javadocJar` добавляются только если они ещё не были добавлены компонентом автоматически.
-- **Понятные ошибки** — если выбранный тип публикации требует несуществующего компонента, плагин сообщает, какой плагин нужно применить.
+- **One-line setup** — apply the plugin, and the publication is already configured.
+- **Sensible defaults** — `groupId` and `version` are taken from the project, `artifactId` from the project name.
+- **Component support** — publish libraries (`java`), Gradle plugins (`java`), or BOM files (`javaPlatform`).
+- **Smart artifacts** — `sourcesJar` and `javadocJar` are added only if they haven't already been added automatically by the component.
+- **Clear errors** — if the selected publication type requires a missing component, the plugin tells you which plugin to apply.
 
-## Требования
+## Requirements
 
 - Gradle 8.x+
 - Java 25 (toolchain)
 
-## Применение
+## Usage
 
 ```groovy
 plugins {
@@ -29,9 +32,9 @@ plugins {
 }
 ```
 
-### Быстрый старт
+### Quick Start
 
-Минимальная конфигурация — просто примени плагин. Всё остальное настроится автоматически:
+Minimal configuration — just apply the plugin. Everything else is set up automatically:
 
 ```groovy
 plugins {
@@ -49,23 +52,23 @@ publishing {
 }
 ```
 
-После этого `gradle publish` опубликует артефакт с координатами
+After that, `gradle publish` will publish the artifact with coordinates
 `com.example:<project-name>:1.0.0`.
 
-## DSL-расширение `publishPlugin`
+## DSL Extension `publishPlugin`
 
-Все свойства являются `Property<T>` и могут быть переопределены:
+All properties are `Property<T>` and can be overridden:
 
-| Свойство | Тип | По умолчанию | Описание |
-|----------|-----|--------------|----------|
-| `publicationGroup` | `Property<String>` | `project.group` | GroupId публикации |
-| `publicationArtifactId` | `Property<String>` | `project.name` | ArtifactId публикации |
-| `publicationVersion` | `Property<String>` | `project.version` | Версия публикации |
-| `publicationType` | `Property<PublicationType>` | `PublicationType.LIBRARY` | Тип публикуемого компонента |
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `publicationGroup` | `Property<String>` | `project.group` | Publication groupId |
+| `publicationArtifactId` | `Property<String>` | `project.name` | Publication artifactId |
+| `publicationVersion` | `Property<String>` | `project.version` | Publication version |
+| `publicationType` | `Property<PublicationType>` | `PublicationType.LIBRARY` | Type of published component |
 
-### Примеры конфигурации
+### Configuration Examples
 
-**Переопределение координат:**
+**Override coordinates:**
 
 ```groovy
 publishPlugin {
@@ -75,7 +78,7 @@ publishPlugin {
 }
 ```
 
-**Публикация BOM-файла:**
+**Publish a BOM file:**
 
 ```groovy
 plugins {
@@ -88,23 +91,23 @@ publishPlugin {
 }
 ```
 
-## Типы публикаций
+## Publication Types
 
-| Значение | Компонент | Требуемый плагин |
-|----------|-----------|------------------|
-| `PublicationType.LIBRARY` | `java` | `java` или `java-library` |
-| `PublicationType.PLUGIN` | `java` | `java` или `java-library` |
+| Value | Component | Required Plugin |
+|-------|-----------|---------------|
+| `PublicationType.LIBRARY` | `java` | `java` or `java-library` |
+| `PublicationType.PLUGIN` | `java` | `java` or `java-library` |
 | `PublicationType.BOM` | `javaPlatform` | `java-platform` |
 
-> **Важно:** если выбранный компонент отсутствует в проекте, плагин выбросит
-> `InvalidUserCodeException` с понятным сообщением о том, какой плагин нужно применить.
+> **Important:** if the selected component is missing from the project, the plugin throws
+> `InvalidUserCodeException` with a clear message about which plugin needs to be applied.
 
-## Работа с `sourcesJar` и `javadocJar`
+## Working with `sourcesJar` and `javadocJar`
 
-Плагин автоматически подхватывает задачи `sourcesJar` и `javadocJar`, если они
-зарегистрированы в проекте. При этом он проверяет, не добавил ли уже компонент
-(`java.withSourcesJar()` / `withJavadocJar()`) эти артефакты самостоятельно,
-чтобы избежать дублирования и ошибок Gradle.
+The plugin automatically picks up `sourcesJar` and `javadocJar` tasks if they
+are registered in the project. It also checks whether the component has already
+added these artifacts itself (`java.withSourcesJar()` / `withJavadocJar()`),
+to avoid duplication and Gradle errors.
 
 ```groovy
 plugins {
@@ -113,25 +116,25 @@ plugins {
 }
 
 java {
-    withSourcesJar()   // будет опубликован автоматически
-    withJavadocJar()   // будет опубликован автоматически
+    withSourcesJar()   // will be published automatically
+    withJavadocJar()   // will be published automatically
 }
 ```
 
-Или вручную:
+Or manually:
 
 ```groovy
 tasks.register('sourcesJar', Jar) {
     archiveClassifier = 'sources'
     from sourceSets.main.allJava
 }
-// publish-plugin подхватит этот артефакт
+// publish-plugin will pick up this artifact
 ```
 
-## Публикация плагина
+## Publishing the Plugin
 
-Плагин сам является `java-gradle-plugin` и публикуется через `maven-publish`
-(стандартный механизм Gradle Plugin Portal или собственный репозиторий).
+The plugin itself is a `java-gradle-plugin` and is published via `maven-publish`
+(standard Gradle Plugin Portal mechanism or a custom repository).
 
 ```groovy
 publishing {

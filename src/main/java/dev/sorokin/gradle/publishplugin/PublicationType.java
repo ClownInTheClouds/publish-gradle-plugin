@@ -40,6 +40,7 @@ public enum PublicationType {
     /**
      * The conventional publication name (currently unused, reserved).
      */
+    @SuppressWarnings("unused")
     public String getPublicationName() {
         return publicationName;
     }

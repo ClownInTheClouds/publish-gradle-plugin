@@ -48,12 +48,13 @@ public class GradlePublishPlugin implements Plugin<Project> {
     }
 
     private void configurePublishing(Project project, GradlePublishPluginExtension extension) {
-        project.getExtensions().configure(PublishingExtension.class, publishing -> {
-            publishing.publications(publications -> publications.register(
-                    PUBLICATION_NAME,
-                    MavenPublication.class,
-                    publication -> configurePublication(project, publication, extension)));
-        });
+        project.getExtensions().configure(PublishingExtension.class, publishing ->
+                publishing.publications(publications -> publications.register(
+                        PUBLICATION_NAME,
+                        MavenPublication.class,
+                        publication -> configurePublication(project, publication, extension))
+                )
+        );
     }
 
     private void configurePublication(Project project, MavenPublication publication, GradlePublishPluginExtension extension) {

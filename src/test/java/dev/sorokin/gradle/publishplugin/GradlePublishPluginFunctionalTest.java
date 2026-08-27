@@ -133,6 +133,7 @@ class GradlePublishPluginFunctionalTest {
         Files.writeString(projectDir.resolve("build.gradle"), content);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private GradleRunner runner(String... arguments) {
         return GradleRunner.create()
                 .withProjectDir(projectDir.toFile())

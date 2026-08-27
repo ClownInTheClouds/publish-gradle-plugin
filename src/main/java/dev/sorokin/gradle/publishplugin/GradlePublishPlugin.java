@@ -1,5 +1,6 @@
 package dev.sorokin.gradle.publishplugin;
 
+import org.gradle.api.InvalidUserCodeException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.publish.PublishingExtension;

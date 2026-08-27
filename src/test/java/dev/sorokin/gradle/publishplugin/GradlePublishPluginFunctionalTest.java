@@ -11,6 +11,11 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * End-to-end {@code GradleRunner}-based tests exercising {@link GradlePublishPlugin}
+ * against real consumer build scripts: default-coordinate publishing, sources jar
+ * contributed via the component vs. created manually, and the BOM validation error.
+ */
 class GradlePublishPluginFunctionalTest {
 
     @TempDir
@@ -75,24 +80,24 @@ class GradlePublishPluginFunctionalTest {
     @Test
     void includesManuallyCreatedSourcesJarNotCoveredByComponent() throws IOException {
         writeBuildFile("""
-            plugins {
-                id 'java'
-                id 'publish-plugin'
-            }
-            group = 'dev.sorokin.example'
-            version = '1.0.0'
-
-            tasks.register('sourcesJar', Jar) {
-                archiveClassifier = 'sources'
-                from sourceSets.main.allJava
-            }
-
-            publishing {
-                repositories {
-                    maven { url = uri(layout.buildDirectory.dir('repo')) }
+                plugins {
+                    id 'java'
+                    id 'publish-plugin'
                 }
-            }
-            """);
+                group = 'dev.sorokin.example'
+                version = '1.0.0'
+                
+                tasks.register('sourcesJar', Jar) {
+                    archiveClassifier = 'sources'
+                    from sourceSets.main.allJava
+                }
+                
+                publishing {
+                    repositories {
+                        maven { url = uri(layout.buildDirectory.dir('repo')) }
+                    }
+                }
+                """);
 
         var result = runner("publish").build();
 

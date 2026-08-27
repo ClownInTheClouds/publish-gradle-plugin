@@ -6,6 +6,9 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Verifies {@link PublicationType}'s mapping to Gradle software component names.
+ */
 class PublicationTypeTest {
 
     @ParameterizedTest

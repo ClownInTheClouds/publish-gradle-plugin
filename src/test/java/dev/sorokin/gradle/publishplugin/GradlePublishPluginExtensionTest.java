@@ -6,6 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Fast, {@code ProjectBuilder}-based tests for the default conventions
+ * exposed by {@link GradlePublishPluginExtension} (group/artifactId/version/type)
+ * and their overridability.
+ */
 class GradlePublishPluginExtensionTest {
 
     private org.gradle.api.Project project;

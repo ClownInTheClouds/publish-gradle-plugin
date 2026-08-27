@@ -11,6 +11,8 @@ public class GradlePublishPlugin implements Plugin<Project> {
 
     private static final String EXTENSION_NAME = "publishPlugin";
     private static final String PUBLICATION_NAME = "mavenJava";
+    private static final String SOURCES_JAR_TASK_NAME = "sourcesJar";
+    private static final String JAVADOC_JAR_TASK_NAME = "javadocJar";
 
     @Override
     public void apply(@NotNull Project project) {
@@ -37,9 +39,29 @@ public class GradlePublishPlugin implements Plugin<Project> {
     }
 
     private void configurePublication(Project project, MavenPublication publication, GradlePublishPluginExtension extension) {
-        publication.from(project.getComponents().named(extension.getPublicationType().get().getComponentName()).get());
+        var type = extension.getPublicationType().get();
+        var componentName = type.getComponentName();
+
+        var components = project.getComponents();
+        if (!components.getNames().contains(componentName)) {
+            throw new org.gradle.api.InvalidUserCodeException(
+                    "publishPlugin: publicationType '%s' требует компонент '%s', но он не найден. ".formatted(type, componentName) +
+                            "Для PublicationType.BOM примените плагин 'java-platform'; " +
+                            "для LIBRARY/PLUGIN — 'java' или 'java-library'."
+            );
+        }
+        publication.from(components.named(componentName).get());
         publication.setGroupId(extension.getPublicationGroup().get());
         publication.setArtifactId(extension.getPublicationArtifactId().get());
         publication.setVersion(extension.getPublicationVersion().get());
+        addArtifactIfPresent(publication, project, SOURCES_JAR_TASK_NAME);
+        addArtifactIfPresent(publication, project, JAVADOC_JAR_TASK_NAME);
+    }
+
+    private void addArtifactIfPresent(MavenPublication publication, Project project, String taskName) {
+        var tasks = project.getTasks();
+        if (tasks.getNames().contains(taskName)) {
+            publication.artifact(tasks.named(taskName));
+        }
     }
 }

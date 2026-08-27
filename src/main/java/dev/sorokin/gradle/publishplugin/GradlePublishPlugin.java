@@ -29,8 +29,6 @@ public class GradlePublishPlugin implements Plugin<Project> {
 
     private void configurePublishing(Project project, GradlePublishPluginExtension extension) {
         project.getExtensions().configure(PublishingExtension.class, publishing -> {
-            publishing.repositories(repos -> extension.getRepositoryActions()
-                    .forEach(action -> action.execute(repos)));
             publishing.publications(publications -> publications.register(
                     extension.getPublicationType().map(PublicationType::getPublicationName).get(),
                     MavenPublication.class,

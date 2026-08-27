@@ -18,7 +18,7 @@ public class GradlePublishPlugin implements Plugin<Project> {
     public void apply(@NotNull Project project) {
         project.getPluginManager().apply(MavenPublishPlugin.class);
         var extension = createExtension(project);
-        configurePublishing(project, extension);
+        project.afterEvaluate(p -> configurePublishing(p, extension));
     }
 
     private GradlePublishPluginExtension createExtension(Project project) {
@@ -44,10 +44,10 @@ public class GradlePublishPlugin implements Plugin<Project> {
 
         var components = project.getComponents();
         if (!components.getNames().contains(componentName)) {
-            throw new org.gradle.api.InvalidUserCodeException(
-                    "publishPlugin: publicationType '%s' требует компонент '%s', но он не найден. ".formatted(type, componentName) +
-                            "Для PublicationType.BOM примените плагин 'java-platform'; " +
-                            "для LIBRARY/PLUGIN — 'java' или 'java-library'."
+            throw new InvalidUserCodeException(
+                    "publishPlugin: publicationType '%s' requires the '%s' component, but it was not found. ".formatted(type, componentName) +
+                            "Apply the 'java-platform' plugin for PublicationType.BOM; " +
+                            "apply 'java' or 'java-library' for LIBRARY/PLUGIN."
             );
         }
         publication.from(components.named(componentName).get());

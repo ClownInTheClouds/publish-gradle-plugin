@@ -5,6 +5,15 @@ import org.gradle.api.provider.Property;
 
 import javax.inject.Inject;
 
+/**
+ * The {@code publishPlugin} DSL extension used to configure the Maven
+ * publication created by {@link GradlePublishPlugin}.
+ *
+ * <p>Defaults for group/artifactId/version are set by the plugin
+ * ({@link GradlePublishPlugin#apply}) based on the {@link org.gradle.api.Project},
+ * not in this class's constructor — override them from the build script if
+ * non-default values are needed.
+ */
 public abstract class GradlePublishPluginExtension {
 
     private final Property<String> publicationGroup;
@@ -20,18 +29,34 @@ public abstract class GradlePublishPluginExtension {
         this.publicationType = objects.property(PublicationType.class).convention(PublicationType.LIBRARY);
     }
 
+    /**
+     * The publication's groupId. Defaults to {@code project.getGroup()}.
+     */
     public Property<String> getPublicationGroup() {
         return publicationGroup;
     }
 
+    /**
+     * The publication's artifactId. Defaults to the project name.
+     */
     public Property<String> getPublicationArtifactId() {
         return publicationArtifactId;
     }
 
+    /**
+     * The publication's version. Defaults to {@code project.getVersion()}.
+     */
     public Property<String> getPublicationVersion() {
         return publicationVersion;
     }
 
+    /**
+     * The type of the published component. Defaults to
+     * {@link PublicationType#LIBRARY}. Determines which software component
+     * of the project is published (see {@link PublicationType#getComponentName()});
+     * the corresponding component must exist in the project by the time the
+     * publication is realized.
+     */
     public Property<PublicationType> getPublicationType() {
         return publicationType;
     }

@@ -21,6 +21,11 @@ public abstract class GradlePublishPluginExtension {
     private final Property<String> publicationArtifactId;
     private final Property<PublicationType> publicationType;
 
+    /**
+     * Constructor for the extension, using the given object factory.
+     *
+     * @param objects the object factory for creating properties
+     */
     @Inject
     public GradlePublishPluginExtension(ObjectFactory objects) {
         this.publicationGroup = objects.property(String.class);
@@ -31,6 +36,8 @@ public abstract class GradlePublishPluginExtension {
 
     /**
      * The publication's groupId. Defaults to {@code project.getGroup()}.
+     *
+     * @return the group ID property
      */
     public Property<String> getPublicationGroup() {
         return publicationGroup;
@@ -38,6 +45,8 @@ public abstract class GradlePublishPluginExtension {
 
     /**
      * The publication's artifactId. Defaults to the project name.
+     *
+     * @return the artifact ID property
      */
     public Property<String> getPublicationArtifactId() {
         return publicationArtifactId;
@@ -45,6 +54,8 @@ public abstract class GradlePublishPluginExtension {
 
     /**
      * The publication's version. Defaults to {@code project.getVersion()}.
+     *
+     * @return the version property
      */
     public Property<String> getPublicationVersion() {
         return publicationVersion;
@@ -56,6 +67,8 @@ public abstract class GradlePublishPluginExtension {
      * of the project is published (see {@link PublicationType#getComponentName()});
      * the corresponding component must exist in the project by the time the
      * publication is realized.
+     *
+     * @return the publication type property
      */
     public Property<PublicationType> getPublicationType() {
         return publicationType;

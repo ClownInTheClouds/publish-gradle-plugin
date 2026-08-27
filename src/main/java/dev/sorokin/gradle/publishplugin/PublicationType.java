@@ -37,6 +37,8 @@ public enum PublicationType {
 
     /**
      * The name of the project's software component that will be published.
+     *
+     * @return the component name
      */
     public String getComponentName() {
         return componentName;

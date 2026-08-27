@@ -7,10 +7,10 @@ import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("unused")
 public class GradlePublishPlugin implements Plugin<Project> {
 
     private static final String EXTENSION_NAME = "publishPlugin";
+    private static final String PUBLICATION_NAME = "mavenJava";
 
     @Override
     public void apply(@NotNull Project project) {
@@ -30,12 +30,7 @@ public class GradlePublishPlugin implements Plugin<Project> {
     private void configurePublishing(Project project, GradlePublishPluginExtension extension) {
         project.getExtensions().configure(PublishingExtension.class, publishing -> {
             publishing.publications(publications -> publications.register(
-                    extension.getPublicationType().map(PublicationType::getPublicationName).get(),
-                    MavenPublication.class,
-                    publication -> configurePublication(project, publication, extension)));
-
-            publishing.publications(publications -> publications.register(
-                    "mavenJava",
+                    PUBLICATION_NAME,
                     MavenPublication.class,
                     publication -> configurePublication(project, publication, extension)));
         });
